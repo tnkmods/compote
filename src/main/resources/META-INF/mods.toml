@@ -4,7 +4,7 @@ license="MIT"
 
 [[mods]] #mandatory
 modId="compote" #mandatory
-version="0.0.1" #mandatory
+version="1.0.0" #mandatory
 displayName="Compote" #mandatory
 authors="thenatekirby" #optional
 description='''
