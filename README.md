@@ -20,7 +20,7 @@ Shift right click with an empty hand to empty the composter [_Off By Default_]
 
 __Customizable Levels__
 
-By default the vanilla composter requires 7 levels of progress before generating a piece of bonemeal. Compote lets you set it to as little at 1 level. [_Set to 7 by Default]
+By default the vanilla composter requires 7 levels of progress before generating a piece of bonemeal. Compote lets you set it to as little at 1 level. [_Set to 7 by Default_]
 
 __Insert & Extract From Any Face__
 
