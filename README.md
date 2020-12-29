@@ -1,8 +1,8 @@
-## Compote
+# Compote
 
 Adds various quality of life improvements to the vanilla minecraft composter. All changes (except for JEI integration) are configurable in the `compote-common.toml` file.
 
-#### Features
+## Features
 
 __JEI Integration__
 
@@ -12,7 +12,7 @@ __Data-Driven__
 
 Adding, removing or changing compostable items can all be done with custom `compote:composting` recipes, so datapack or modpack developers can customize to their needs. 
 
-#### Tweaks
+## Tweaks
 
 __Right Click To Empty__
 
@@ -31,7 +31,9 @@ __Turn Off First Compost Success__
 By default, vanilla will always make the first composting attempt successful (raising it by a level regardless of chance). You can turn this off if you want [_Vanilla behavior by default_]
 
 
-#### Recipes
+## Custom Recipes
+
+The format is as follows:
 
 ```
 {
