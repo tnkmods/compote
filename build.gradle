@@ -119,7 +119,12 @@ dependencies {
     if (project.hasProperty('jei_version')) {
         compileOnly fg.deobf("mezz.jei:jei-${project.jei_version}:api")
         runtimeOnly fg.deobf("mezz.jei:jei-${project.jei_version}")
+    }
 
+    if (findProject(':Babel') != null) {
+        compile project(':Babel')
+    } else {
+        // TODO: Maven
     }
 }
 

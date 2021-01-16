@@ -24,3 +24,10 @@ QOL improvements to the composter
     versionRange="[1.16.4,1.17)"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.compote]]
+    modId="babel"
+    mandatory=true
+    versionRange="[1.0.0,2.0.0)"
+    ordering="AFTER"
+    side="BOTH"
