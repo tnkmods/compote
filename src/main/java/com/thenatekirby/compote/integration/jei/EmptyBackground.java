@@ -1,4 +1,4 @@
-package com.thenatekirby.compote.util;
+package com.thenatekirby.compote.integration.jei;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.gui.drawable.IDrawable;

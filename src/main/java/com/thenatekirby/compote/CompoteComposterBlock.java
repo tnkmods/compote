@@ -1,5 +1,6 @@
 package com.thenatekirby.compote;
 
+import com.thenatekirby.babel.integration.Mods;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
@@ -24,7 +25,7 @@ public class CompoteComposterBlock extends ComposterBlock {
 
     CompoteComposterBlock() {
         super(BLOCK_PROPERTIES);
-        setRegistryName("minecraft", "composter");
+        setRegistryName(Mods.MINECRAFT.withPath("composter"));
     }
 
     // ====---------------------------------------------------------------------------====

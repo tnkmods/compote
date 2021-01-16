@@ -15,12 +15,12 @@ public class CompoteConfig {
 
     static ForgeConfigSpec COMMON_CONFIG;
 
-    public static ForgeConfigSpec.BooleanValue rightClickToClear;
-    public static ForgeConfigSpec.IntValue levelCount;
+    static ForgeConfigSpec.BooleanValue rightClickToClear;
+    static ForgeConfigSpec.IntValue levelCount;
     // public static ForgeConfigSpec.BooleanValue useLootTableDrops;
-    public static ForgeConfigSpec.BooleanValue firstCompostAlwaysSucceeds;
-    public static ForgeConfigSpec.BooleanValue insertFromAnyDirection;
-    public static ForgeConfigSpec.BooleanValue extractFromAnyDirection;
+    static ForgeConfigSpec.BooleanValue firstCompostAlwaysSucceeds;
+    static ForgeConfigSpec.BooleanValue insertFromAnyDirection;
+    static ForgeConfigSpec.BooleanValue extractFromAnyDirection;
 
     static {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();

@@ -1,7 +1,8 @@
 package com.thenatekirby.compote;
 
+import com.thenatekirby.babel.core.MutableResourceLocation;
+import com.thenatekirby.babel.util.RegistrationUtil;
 import com.thenatekirby.compote.registration.CompoteRegistration;
-import com.thenatekirby.compote.util.RegistrationUtil;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 @Mod("compote")
 public class Compote {
     public static final String MOD_ID = "compote";
+    public static final MutableResourceLocation MOD = new MutableResourceLocation(MOD_ID);
 
     private static final Logger LOGGER = LogManager.getLogger();
     public static Logger getLogger() {

@@ -28,6 +28,6 @@ QOL improvements to the composter
 [[dependencies.compote]]
     modId="babel"
     mandatory=true
-    versionRange="[1.0.0,2.0.0)"
+    versionRange="[1.0.1,2.0.0)"
     ordering="AFTER"
     side="BOTH"

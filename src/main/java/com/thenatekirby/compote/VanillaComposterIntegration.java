@@ -1,8 +1,8 @@
 package com.thenatekirby.compote;
 
+import com.thenatekirby.babel.core.ChanceItemStack;
+import com.thenatekirby.babel.util.ReflectionHelper;
 import com.thenatekirby.compote.recipe.CompoteRecipe;
-import com.thenatekirby.compote.util.ChanceItemStack;
-import com.thenatekirby.compote.util.ReflectionHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;

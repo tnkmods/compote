@@ -1,6 +1,6 @@
 package com.thenatekirby.compote.integration.jei;
 
-import com.thenatekirby.compote.util.ChanceItemStack;
+import com.thenatekirby.babel.core.ChanceItemStack;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.Item;

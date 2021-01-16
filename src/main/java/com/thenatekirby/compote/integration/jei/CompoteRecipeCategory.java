@@ -6,7 +6,6 @@ import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.thenatekirby.compote.Compote;
 import com.thenatekirby.compote.Localization;
-import com.thenatekirby.compote.util.EmptyBackground;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
