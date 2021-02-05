@@ -2,6 +2,7 @@ package com.thenatekirby.compote;
 
 import com.thenatekirby.babel.core.ChanceItemStack;
 import com.thenatekirby.babel.util.ReflectionHelper;
+import com.thenatekirby.babel.util.RegistrationUtil;
 import com.thenatekirby.compote.recipe.CompoteRecipe;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -57,10 +58,5 @@ public class VanillaComposterIntegration {
                 addComposting(change);
             }
         }
-    }
-
-    public static void registerCompoteAsPointOfInterest() {
-        Map<BlockState, PointOfInterestType> types = ReflectionHelper.getPrivateValue(PointOfInterestType.class, null, ASMAPI.mapField("field_221073_u"));
-        Blocks.COMPOSTER.getStateContainer().getValidStates().forEach(state -> types.put(state, PointOfInterestType.FARMER));
     }
 }

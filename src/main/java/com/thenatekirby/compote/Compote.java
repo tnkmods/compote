@@ -4,6 +4,7 @@ import com.thenatekirby.babel.core.MutableResourceLocation;
 import com.thenatekirby.babel.util.RegistrationUtil;
 import com.thenatekirby.compote.registration.CompoteRegistration;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,16 +32,11 @@ public class Compote {
 
     public Compote() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CompoteConfig.COMMON_CONFIG);
-
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        
         MinecraftForge.EVENT_BUS.register(this);
 
         CompoteRegistration.register();
         CompoteConfig.loadConfig(CompoteConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("compote-common.toml"));
-    }
-
-    private void setup(final FMLCommonSetupEvent event) {
-        VanillaComposterIntegration.registerCompoteAsPointOfInterest();
     }
 
     @SubscribeEvent
@@ -52,10 +48,13 @@ public class Compote {
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onBlocksRegistry(final RegistryEvent.Register<Block> event) {
-            boolean result = RegistrationUtil.overrideExistingBlock(new CompoteComposterBlock(), MOD_ID);
+            CompoteComposterBlock block = new CompoteComposterBlock();
+            boolean result = RegistrationUtil.overrideExistingBlock(block, MOD_ID);
             if (!result) {
                 LOGGER.fatal("Unable to override vanilla composter, aborting.");
             }
+
+            RegistrationUtil.overrideBlockstates(Blocks.COMPOSTER, block);
         }
     }
 }

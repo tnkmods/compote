@@ -1,5 +1,6 @@
 package com.thenatekirby.compote;
 
+import com.thenatekirby.babel.api.IBlockReplacement;
 import com.thenatekirby.babel.integration.Mods;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -9,6 +10,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -20,7 +22,7 @@ import javax.annotation.Nullable;
 
 // ====---------------------------------------------------------------------------====
 
-public class CompoteComposterBlock extends ComposterBlock {
+public class CompoteComposterBlock extends ComposterBlock implements IBlockReplacement {
     private static final Block.Properties BLOCK_PROPERTIES = AbstractBlock.Properties.create(Material.WOOD).hardnessAndResistance(0.6F).sound(SoundType.WOOD);
 
     CompoteComposterBlock() {
@@ -150,6 +152,31 @@ public class CompoteComposterBlock extends ComposterBlock {
         }
 
         return direction == Direction.DOWN;
+    }
+
+    // ====---------------------------------------------------------------------------====
+    // region IBlockReplacement
+
+    private StateContainer<Block, BlockState> container;
+
+    @Override
+    public void overrideDefaultState(BlockState state) {
+        setDefaultState(state);
+    }
+
+    @Override
+    public void overrideStateContainer(StateContainer<Block, BlockState> container) {
+        this.container = container;
+    }
+
+    @Override
+    @Nonnull
+    public StateContainer<Block, BlockState> getStateContainer() {
+        if (container != null) {
+            return container;
+        }
+
+        return super.getStateContainer();
     }
 
     // endregion
