@@ -7,6 +7,7 @@ import com.thenatekirby.babel.core.ChanceItemStack;
 import com.thenatekirby.babel.core.EmptyInventory;
 import com.thenatekirby.compote.Compote;
 import com.thenatekirby.compote.registration.CompoteRegistration;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -22,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 // ====---------------------------------------------------------------------------====
 
@@ -90,20 +92,21 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
         return false;
     }
 
+
     @Override
     @Nonnull
-    public ItemStack getCraftingResult(@Nonnull EmptyInventory inv) {
+    public ItemStack assemble(@Nonnull EmptyInventory inv) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return false;
     }
 
     @Override
     @Nonnull
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return ItemStack.EMPTY;
     }
 
@@ -151,28 +154,28 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
 
         @Override
         @Nonnull
-        public CompoteRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        public CompoteRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
             List<ChanceItemStack> additions = new ArrayList<>();
             List<ChanceItemStack> removals = new ArrayList<>();
             List<ChanceItemStack> changes = new ArrayList<>();
             int priority = 0;
 
-            if (JSONUtils.hasField(json, "add")) {
+            if (JSONUtils.isValidNode(json, "add")) {
                 JsonElement jsonElement = json.get("add");
                 parseJsonElementInto(jsonElement, additions);
             }
 
-            if (JSONUtils.hasField(json, "remove")) {
+            if (JSONUtils.isValidNode(json, "remove")) {
                 JsonElement jsonElement = json.get("remove");
                 parseJsonElementInto(jsonElement, removals);
             }
 
-            if (JSONUtils.hasField(json, "change")) {
+            if (JSONUtils.isValidNode(json, "change")) {
                 JsonElement jsonElement = json.get("change");
                 parseJsonElementInto(jsonElement, removals);
             }
 
-            if (JSONUtils.hasField(json, "priority")) {
+            if (JSONUtils.isValidNode(json, "priority")) {
                 priority = json.getAsJsonPrimitive("priority").getAsInt();
             }
 
@@ -181,7 +184,7 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
 
         @Nullable
         @Override
-        public CompoteRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer) {
+        public CompoteRecipe fromNetwork(@Nonnull ResourceLocation recipeId, PacketBuffer buffer) {
             int priority = buffer.readInt();
 
             List<ChanceItemStack> additions = new ArrayList<>();
@@ -207,7 +210,7 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
         }
 
         @Override
-        public void write(PacketBuffer buffer, CompoteRecipe recipe) {
+        public void toNetwork(PacketBuffer buffer, CompoteRecipe recipe) {
             buffer.writeInt(recipe.getPriority());
 
             buffer.writeVarInt(recipe.getAdditions().size());

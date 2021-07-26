@@ -129,10 +129,10 @@ public class CompoteRecipeCategory implements IRecipeCategory<JEICompostingRecip
         Minecraft minecraft = Minecraft.getInstance();
 
         int textColor = 0xFF888888;
-        int width = minecraft.fontRenderer.getStringWidth(chanceText);
+        int width = minecraft.font.width(chanceText);
         int x = (background.getWidth() - width) / 2;
         int y = (background.getHeight() / 2) + 12;
-        minecraft.fontRenderer.drawString(matrixStack, chanceText, x, y, textColor);
+        minecraft.font.draw(matrixStack, chanceText, x, y, textColor);
 
         cachedData.getUnchecked(recipe).setChanceBounds(x, y, width, 16);
     }

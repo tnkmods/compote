@@ -14,7 +14,7 @@ import java.util.List;
 class CompostingRecipeBuilder {
     static List<JEICompostingRecipe> getCompostingRecipes() {
         List<JEICompostingRecipe> recipes = new ArrayList<>();
-        Object2FloatMap chances = ComposterBlock.CHANCES;
+        Object2FloatMap chances = ComposterBlock.COMPOSTABLES;
 
         for (Object item: chances.keySet()) {
             ItemStack itemStack = new ItemStack((Item) item);

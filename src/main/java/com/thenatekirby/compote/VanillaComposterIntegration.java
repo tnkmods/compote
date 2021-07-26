@@ -23,7 +23,7 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class VanillaComposterIntegration {
     public static void addComposting(@Nonnull ItemStack itemStack, float chance) {
-        ComposterBlock.CHANCES.putIfAbsent(itemStack.getItem(), chance);
+        ComposterBlock.COMPOSTABLES.putIfAbsent(itemStack.getItem(), chance);
     }
 
     public static void addComposting(@Nonnull ChanceItemStack itemStack) {
@@ -31,7 +31,7 @@ public class VanillaComposterIntegration {
     }
 
     public static void removeComposting(@Nonnull ChanceItemStack itemStack) {
-        ComposterBlock.CHANCES.removeFloat(itemStack.getItemStack().getItem());
+        ComposterBlock.COMPOSTABLES.removeFloat(itemStack.getItemStack().getItem());
     }
 
     public static void addRecipesToComposterChances(@Nonnull RecipeManager recipeManager) {
