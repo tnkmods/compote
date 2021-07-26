@@ -32,7 +32,7 @@ public class Compote {
 
     public Compote() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CompoteConfig.COMMON_CONFIG);
-        
+
         MinecraftForge.EVENT_BUS.register(this);
 
         CompoteRegistration.register();
