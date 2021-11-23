@@ -172,7 +172,7 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
 
             if (JSONUtils.isValidNode(json, "change")) {
                 JsonElement jsonElement = json.get("change");
-                parseJsonElementInto(jsonElement, removals);
+                parseJsonElementInto(jsonElement, changes);
             }
 
             if (JSONUtils.isValidNode(json, "priority")) {
