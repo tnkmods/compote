@@ -11,7 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 // ====---------------------------------------------------------------------------====
 
 public class CompoteRegistration {
-    private static final DeferredRegister<IRecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Compote.MOD_ID);
+    public static final DeferredRegister<IRecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Compote.MOD_ID);
 
     public static final DeferredRecipeSerializer<CompoteRecipe.Serializer> COMPOSTING = DeferredRecipeSerializer.create(CompoteRecipe.RECIPE_TYPE_NAME, CompoteRecipe.Serializer::new, SERIALIZERS);
 
