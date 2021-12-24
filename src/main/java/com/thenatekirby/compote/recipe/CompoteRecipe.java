@@ -4,35 +4,33 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.thenatekirby.babel.core.ChanceItemStack;
-import com.thenatekirby.babel.core.EmptyInventory;
+import com.thenatekirby.babel.core.container.EmptyContainer;
 import com.thenatekirby.compote.Compote;
 import com.thenatekirby.compote.registration.CompoteRegistration;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 // ====---------------------------------------------------------------------------====
 
-public class CompoteRecipe implements IRecipe<EmptyInventory> {
+public class CompoteRecipe implements Recipe<EmptyContainer> {
     public static final String RECIPE_TYPE_NAME = "composting";
-    private static final IRecipeType RECIPE_TYPE = registerRecipeType();
+    private static final RecipeType RECIPE_TYPE = registerRecipeType();
 
-    private static <T extends IRecipe<?>> IRecipeType registerRecipeType() {
-        return Registry.register(Registry.RECIPE_TYPE, Compote.MOD.withPath(RECIPE_TYPE_NAME), new IRecipeType<T>() {
+    private static <T extends Recipe<?>> RecipeType registerRecipeType() {
+        return Registry.register(Registry.RECIPE_TYPE, Compote.MOD.withPath(RECIPE_TYPE_NAME), new RecipeType<T>() {
             @Override
             public String toString() {
                 return RECIPE_TYPE_NAME;
@@ -88,14 +86,14 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
     // IRecipe
 
     @Override
-    public boolean matches(@Nonnull EmptyInventory inv, @Nonnull World worldIn) {
+    public boolean matches(@Nonnull EmptyContainer inv, @Nonnull Level level) {
         return false;
     }
 
 
     @Override
     @Nonnull
-    public ItemStack assemble(@Nonnull EmptyInventory inv) {
+    public ItemStack assemble(@Nonnull EmptyContainer inv) {
         return ItemStack.EMPTY;
     }
 
@@ -118,20 +116,20 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return CompoteRegistration.COMPOSTING.getAsRecipeSerializer();
     }
 
     @Nonnull
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return RECIPE_TYPE;
     }
 
     // ====---------------------------------------------------------------------------====
     // region Serializer
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<CompoteRecipe> {
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<CompoteRecipe> {
         private void parseJsonElementInto(@Nonnull JsonElement element, @Nonnull List<ChanceItemStack> list) {
             if (element.isJsonArray()) {
                 JsonArray array = element.getAsJsonArray();
@@ -160,22 +158,22 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
             List<ChanceItemStack> changes = new ArrayList<>();
             int priority = 0;
 
-            if (JSONUtils.isValidNode(json, "add")) {
+            if (GsonHelper.isValidNode(json, "add")) {
                 JsonElement jsonElement = json.get("add");
                 parseJsonElementInto(jsonElement, additions);
             }
 
-            if (JSONUtils.isValidNode(json, "remove")) {
+            if (GsonHelper.isValidNode(json, "remove")) {
                 JsonElement jsonElement = json.get("remove");
                 parseJsonElementInto(jsonElement, removals);
             }
 
-            if (JSONUtils.isValidNode(json, "change")) {
+            if (GsonHelper.isValidNode(json, "change")) {
                 JsonElement jsonElement = json.get("change");
                 parseJsonElementInto(jsonElement, removals);
             }
 
-            if (JSONUtils.isValidNode(json, "priority")) {
+            if (GsonHelper.isValidNode(json, "priority")) {
                 priority = json.getAsJsonPrimitive("priority").getAsInt();
             }
 
@@ -184,7 +182,7 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
 
         @Nullable
         @Override
-        public CompoteRecipe fromNetwork(@Nonnull ResourceLocation recipeId, PacketBuffer buffer) {
+        public CompoteRecipe fromNetwork(@Nonnull ResourceLocation recipeId, FriendlyByteBuf buffer) {
             int priority = buffer.readInt();
 
             List<ChanceItemStack> additions = new ArrayList<>();
@@ -210,7 +208,7 @@ public class CompoteRecipe implements IRecipe<EmptyInventory> {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, CompoteRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, CompoteRecipe recipe) {
             buffer.writeInt(recipe.getPriority());
 
             buffer.writeVarInt(recipe.getAdditions().size());

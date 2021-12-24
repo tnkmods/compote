@@ -1,5 +1,7 @@
 package com.thenatekirby.compote.integration.jei;
 
+// ====---------------------------------------------------------------------------====
+
 class JEICompostingRecipeData {
     private int iconX;
     private int iconY;

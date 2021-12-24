@@ -3,7 +3,7 @@ package com.thenatekirby.compote.integration.jei;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.thenatekirby.compote.Compote;
 import com.thenatekirby.compote.Localization;
 import mezz.jei.api.constants.VanillaTypes;
@@ -13,12 +13,12 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.List;
 // ====---------------------------------------------------------------------------====
 
 public class CompoteRecipeCategory implements IRecipeCategory<JEICompostingRecipe> {
-    static final ResourceLocation UID = new ResourceLocation(Compote.MOD_ID, "composting");
+    static final ResourceLocation UID = Compote.MOD.withPath("composting");
 
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private IGuiHelper guiHelper;
@@ -58,7 +58,7 @@ public class CompoteRecipeCategory implements IRecipeCategory<JEICompostingRecip
         return new ItemStack(Blocks.COMPOSTER);
     }
 
-    private TranslationTextComponent getLocalizedName() {
+    private TranslatableComponent getLocalizedName() {
         return Localization.COMPOSTING;
     }
 
@@ -79,9 +79,8 @@ public class CompoteRecipeCategory implements IRecipeCategory<JEICompostingRecip
     }
 
     @Override
-    @Nonnull
-    public String getTitle() {
-        return getLocalizedName().getString();
+    public Component getTitle() {
+        return getLocalizedName();
     }
 
     @Override
@@ -118,14 +117,14 @@ public class CompoteRecipeCategory implements IRecipeCategory<JEICompostingRecip
     }
 
     @Override
-    public void draw(JEICompostingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(@Nonnull JEICompostingRecipe recipe, @Nonnull PoseStack matrixStack, double mouseX, double mouseY) {
         JEICompostingRecipeData data = cachedData.getUnchecked(recipe);
         icon.draw(matrixStack, data.getIconX(), data.getIconY());
 
         drawChance(recipe, matrixStack, data.getChanceText());
     }
 
-    private void drawChance(JEICompostingRecipe recipe, MatrixStack matrixStack, String chanceText) {
+    private void drawChance(JEICompostingRecipe recipe, PoseStack matrixStack, String chanceText) {
         Minecraft minecraft = Minecraft.getInstance();
 
         int textColor = 0xFF888888;
@@ -139,10 +138,10 @@ public class CompoteRecipeCategory implements IRecipeCategory<JEICompostingRecip
 
     @Nonnull
     @Override
-    public List<ITextComponent> getTooltipStrings(JEICompostingRecipe recipe, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(@Nonnull JEICompostingRecipe recipe, double mouseX, double mouseY) {
         JEICompostingRecipeData data = cachedData.getUnchecked(recipe);
 
-        List<ITextComponent> textComponents = new ArrayList<>();
+        List<Component> textComponents = new ArrayList<>();
         if (data.isMouseHoveringChance(mouseX, mouseY)) {
             textComponents.add(Localization.TOOLTIP);
         }

@@ -9,6 +9,8 @@ import net.minecraftforge.fml.config.ModConfig;
 
 import java.nio.file.Path;
 
+// ====---------------------------------------------------------------------------====
+
 @Mod.EventBusSubscriber
 public class CompoteConfig {
     private static final String CATEGORY_GENERAL = "general";
@@ -51,13 +53,14 @@ public class CompoteConfig {
         COMMON_CONFIG = COMMON_BUILDER.build();
     }
 
-    @SubscribeEvent
-    public static void onLoad(final ModConfig.Loading configEvent) {
-    }
-
-    @SubscribeEvent
-    public static void onReload(final ModConfig.Reloading configEvent) {
-    }
+    // TODO: Figure This Out
+//    @SubscribeEvent
+//    public static void onLoad(final ModConfig.Loading configEvent) {
+//    }
+//
+//    @SubscribeEvent
+//    public static void onReload(final ModConfig.Reloading configEvent) {
+//    }
 
     static void loadConfig(ForgeConfigSpec spec, Path path) {
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)

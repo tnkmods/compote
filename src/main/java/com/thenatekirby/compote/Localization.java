@@ -1,8 +1,10 @@
 package com.thenatekirby.compote;
 
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+
+// ====---------------------------------------------------------------------------====
 
 public class Localization {
-    public static final TranslationTextComponent COMPOSTING = new TranslationTextComponent("compote.composting");
-    public static final TranslationTextComponent TOOLTIP = new TranslationTextComponent("compote.tooltip");
+    public static final TranslatableComponent COMPOSTING = new TranslatableComponent("compote.composting");
+    public static final TranslatableComponent TOOLTIP = new TranslatableComponent("compote.tooltip");
 }

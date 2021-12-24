@@ -1,7 +1,7 @@
 package com.thenatekirby.compote.integration.jei;
 
 import com.thenatekirby.babel.core.ChanceItemStack;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 // ====---------------------------------------------------------------------------====
 

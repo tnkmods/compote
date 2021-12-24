@@ -1,22 +1,15 @@
 package com.thenatekirby.compote;
 
 import com.thenatekirby.babel.core.ChanceItemStack;
-import com.thenatekirby.babel.util.ReflectionHelper;
-import com.thenatekirby.babel.util.RegistrationUtil;
 import com.thenatekirby.compote.recipe.CompoteRecipe;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.village.PointOfInterestType;
-import net.minecraftforge.coremod.api.ASMAPI;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.block.ComposterBlock;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 // ====---------------------------------------------------------------------------====
 
@@ -36,9 +29,9 @@ public class VanillaComposterIntegration {
 
     public static void addRecipesToComposterChances(@Nonnull RecipeManager recipeManager) {
         List<CompoteRecipe> recipes = new ArrayList<>();
-        for (IRecipe<?> iRecipe : recipeManager.getRecipes()) {
-            if (iRecipe instanceof CompoteRecipe) {
-                recipes.add((CompoteRecipe) iRecipe);
+        for (Recipe<?> recipe : recipeManager.getRecipes()) {
+            if (recipe instanceof CompoteRecipe) {
+                recipes.add((CompoteRecipe) recipe);
             }
         }
 

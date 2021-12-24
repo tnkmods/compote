@@ -1,21 +1,30 @@
 package com.thenatekirby.compote;
 
-import com.thenatekirby.babel.api.IBlockReplacement;
+
+import com.thenatekirby.babel.core.api.IBlockReplacement;
+import com.thenatekirby.babel.entity.PlayerStatus;
 import com.thenatekirby.babel.integration.Mods;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,7 +32,7 @@ import javax.annotation.Nullable;
 // ====---------------------------------------------------------------------------====
 
 public class CompoteComposterBlock extends ComposterBlock implements IBlockReplacement {
-    private static final AbstractBlock.Properties BLOCK_PROPERTIES = AbstractBlock.Properties.of(Material.WOOD).strength(0.6F).sound(SoundType.WOOD);
+    private static final Block.Properties BLOCK_PROPERTIES = Block.Properties.of(Material.WOOD).strength(0.6F).sound(SoundType.WOOD);
 
     CompoteComposterBlock() {
         super(BLOCK_PROPERTIES);
@@ -34,39 +43,41 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
     // region Vanilla Overrides
 
     @Nonnull
-    public ActionResultType use(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player, @Nonnull Hand hand, BlockRayTraceResult hit) {
-        int level = state.getValue(LEVEL);
+    @Override
+    public InteractionResult use(BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult hitResult) {
+        int fillLevel = state.getValue(LEVEL);
         ItemStack itemStack = player.getItemInHand(hand);
 
-        if (itemStack.isEmpty() && player.isCrouching() && level > 0) {
+        if (itemStack.isEmpty() && player.isCrouching() && fillLevel > 0) {
             if (CompoteConfig.rightClickToClear.get()) {
-                world.playSound(null, pos, SoundEvents.COMPOSTER_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                resetFillState(state, world, pos);
-                return ActionResultType.sidedSuccess(world.isClientSide);
+                level.playSound(null, pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                resetFillState(state, level, pos);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
 
-        if (level < 8 && COMPOSTABLES.containsKey(itemStack.getItem())) {
-            if (level < 7 && !world.isClientSide) {
-                BlockState blockstate = attemptCompost(state, world, pos, itemStack);
-                world.levelEvent(1500, pos, state != blockstate ? 1 : 0);
-                if (!player.abilities.instabuild) {
+        if (fillLevel < 8 && COMPOSTABLES.containsKey(itemStack.getItem())) {
+            if (fillLevel < 7 && !level.isClientSide) {
+                BlockState blockstate = attemptCompost(state, level, pos, itemStack);
+                level.levelEvent(1500, pos, state != blockstate ? 1 : 0);
+
+                if (PlayerStatus.of(player).isCreative()) {
                     itemStack.shrink(1);
                 }
             }
 
-            return ActionResultType.sidedSuccess(world.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide);
 
-        } else if (level == 8) {
-            emptyAndSpawnDrops(state, world, pos);
-            return ActionResultType.sidedSuccess(world.isClientSide);
+        } else if (fillLevel == 8) {
+            emptyAndSpawnDrops(state, level, pos);
+            return InteractionResult.sidedSuccess(level.isClientSide);
 
         } else {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
     }
 
-    private static BlockState attemptCompost(BlockState state, IWorld world, BlockPos pos, ItemStack stack) {
+    private static BlockState attemptCompost(BlockState state, LevelAccessor world, BlockPos pos, ItemStack stack) {
         int level = state.getValue(LEVEL);
 
         float chance = COMPOSTABLES.getFloat(stack.getItem());
@@ -83,38 +94,38 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
         }
     }
 
-    private static BlockState attemptCompostImpl(BlockState state, IWorld world, BlockPos pos) {
-        int level = state.getValue(LEVEL);
-        int nextLevel = level + 1;
+    private static BlockState attemptCompostImpl(BlockState state, LevelAccessor level, BlockPos pos) {
+        int fillLevel = state.getValue(LEVEL);
+        int nextLevel = fillLevel + 1;
         int effectiveLevel = (nextLevel == CompoteConfig.levelCount.get()) ? 7 : nextLevel;
 
         BlockState blockstate = state.setValue(LEVEL, effectiveLevel);
-        world.setBlock(pos, blockstate, 3);
+        level.setBlock(pos, blockstate, 3);
 
         if (effectiveLevel == 7) {
-            world.getBlockTicks().scheduleTick(pos, state.getBlock(), 20);
+            level.scheduleTick(pos, state.getBlock(), 20);
         }
 
         return blockstate;
     }
 
-    private static BlockState emptyAndSpawnDrops(BlockState state, World world, BlockPos pos) {
-        if (!world.isClientSide) {
-            double d0 = (double)(world.random.nextFloat() * 0.7F) + (double)0.15F;
-            double d1 = (double)(world.random.nextFloat() * 0.7F) + (double)0.060000002F + 0.6D;
-            double d2 = (double)(world.random.nextFloat() * 0.7F) + (double)0.15F;
+    private static BlockState emptyAndSpawnDrops(BlockState state, Level level, BlockPos pos) {
+        if (!level.isClientSide) {
+            double d0 = (double)(level.random.nextFloat() * 0.7F) + (double)0.15F;
+            double d1 = (double)(level.random.nextFloat() * 0.7F) + (double)0.060000002F + 0.6D;
+            double d2 = (double)(level.random.nextFloat() * 0.7F) + (double)0.15F;
 
-            ItemEntity itemEntity = new ItemEntity(world, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, generateDrops());
+            ItemEntity itemEntity = new ItemEntity(level, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, generateDrops());
             itemEntity.setDefaultPickUpDelay();
-            world.addFreshEntity(itemEntity);
+            level.addFreshEntity(itemEntity);
         }
 
-        BlockState blockstate = resetFillState(state, world, pos);
-        world.playSound(null, pos, SoundEvents.COMPOSTER_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        BlockState blockstate = resetFillState(state, level, pos);
+        level.playSound(null, pos, SoundEvents.COMPOSTER_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
         return blockstate;
     }
 
-    private static BlockState resetFillState(BlockState state, IWorld world, BlockPos pos) {
+    private static BlockState resetFillState(BlockState state, LevelAccessor world, BlockPos pos) {
         BlockState blockstate = state.setValue(LEVEL, 0);
         world.setBlock(pos, blockstate, 3);
         return blockstate;
@@ -125,12 +136,12 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
     }
 
     @Nonnull
-    public ISidedInventory getContainer(BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos) {
-        int i = state.getValue(LEVEL);
-        if (i == 8) {
-            return new CompoteComposterBlock.FullInventory(state, world, pos, generateDrops());
+    public WorldlyContainer getContainer(BlockState state, @Nonnull LevelAccessor level, @Nonnull BlockPos pos) {
+        int fillLevel = state.getValue(LEVEL);
+        if (fillLevel == 8) {
+            return new CompoteComposterBlock.FullInventory(state, level, pos, generateDrops());
         } else {
-            return (i < 7 ? new CompoteComposterBlock.PartialInventory(state, world, pos) : new CompoteComposterBlock.EmptyInventory());
+            return (fillLevel < 7 ? new CompoteComposterBlock.PartialInventory(state, level, pos) : new CompoteComposterBlock.EmptyInventory());
         }
     }
 
@@ -157,7 +168,7 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
     // ====---------------------------------------------------------------------------====
     // region IBlockReplacement
 
-    private StateContainer<Block, BlockState> container;
+    private StateDefinition<Block, BlockState> container;
 
     @Override
     public void overrideDefaultState(BlockState state) {
@@ -165,13 +176,13 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
     }
 
     @Override
-    public void overrideStateContainer(StateContainer<Block, BlockState> container) {
+    public void overrideStateContainer(StateDefinition<Block, BlockState> container) {
         this.container = container;
     }
 
     @Override
     @Nonnull
-    public StateContainer<Block, BlockState> getStateDefinition() {
+    public StateDefinition<Block, BlockState> getStateDefinition() {
         if (container != null) {
             return container;
         }
@@ -183,7 +194,7 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
     // ====---------------------------------------------------------------------------====
     // region Inventories
 
-    static class EmptyInventory extends Inventory implements ISidedInventory {
+    static class EmptyInventory extends SimpleContainer implements WorldlyContainer {
         EmptyInventory() {
             super(0);
         }
@@ -208,13 +219,13 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
         }
     }
 
-    static class FullInventory extends Inventory implements ISidedInventory {
+    static class FullInventory extends SimpleContainer implements WorldlyContainer {
         private final BlockState state;
-        private final IWorld world;
+        private final LevelAccessor world;
         private final BlockPos pos;
         private boolean extracted;
 
-        FullInventory(BlockState state, IWorld world, BlockPos pos, ItemStack stack) {
+        FullInventory(BlockState state, LevelAccessor world, BlockPos pos, ItemStack stack) {
             super(stack);
             this.state = state;
             this.world = world;
@@ -257,13 +268,13 @@ public class CompoteComposterBlock extends ComposterBlock implements IBlockRepla
         }
     }
 
-    static class PartialInventory extends Inventory implements ISidedInventory {
+    static class PartialInventory extends SimpleContainer implements WorldlyContainer {
         private final BlockState state;
-        private final IWorld world;
+        private final LevelAccessor world;
         private final BlockPos pos;
         private boolean inserted;
 
-        PartialInventory(BlockState state, IWorld world, BlockPos pos) {
+        PartialInventory(BlockState state, LevelAccessor world, BlockPos pos) {
             super(1);
             this.state = state;
             this.world = world;

@@ -1,6 +1,6 @@
 package com.thenatekirby.compote.integration.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 
 import javax.annotation.Nonnull;
@@ -27,6 +27,6 @@ public class EmptyBackground implements IDrawable {
     }
 
     @Override
-    public void draw(@Nonnull MatrixStack matrixStack, int i, int i1) {
+    public void draw(@Nonnull PoseStack matrixStack, int i, int i1) {
     }
 }
