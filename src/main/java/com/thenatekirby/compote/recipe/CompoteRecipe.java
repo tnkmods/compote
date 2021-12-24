@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.thenatekirby.babel.core.ChanceItemStack;
 import com.thenatekirby.babel.core.container.EmptyContainer;
 import com.thenatekirby.compote.Compote;
-import com.thenatekirby.compote.registration.CompoteRegistration;
+import com.thenatekirby.compote.registration.CompoteRecipes;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -117,7 +117,7 @@ public class CompoteRecipe implements Recipe<EmptyContainer> {
     @Nonnull
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return CompoteRegistration.COMPOSTING.getAsRecipeSerializer();
+        return CompoteRecipes.COMPOSTING.getAsRecipeSerializer();
     }
 
     @Nonnull

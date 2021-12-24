@@ -5,7 +5,7 @@ import com.thenatekirby.babel.core.MutableResourceLocation;
 import com.thenatekirby.babel.core.lifecycle.IModLifecycleAdapter;
 import com.thenatekirby.babel.core.lifecycle.RegistryBuilder;
 import com.thenatekirby.babel.util.RegistrationUtil;
-import com.thenatekirby.compote.registration.CompoteRegistration;
+import com.thenatekirby.compote.registration.CompoteRecipes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.RegistryEvent;
@@ -29,7 +29,7 @@ public class Compote extends BabelMod {
         setModLifecycleAdapter(new IModLifecycleAdapter() {
             @Override
             public void onSetupRegistries(@Nonnull RegistryBuilder builder) {
-                builder.addRecipeSerializers(CompoteRegistration.SERIALIZERS);
+                builder.addRecipeSerializers(CompoteRecipes.SERIALIZERS);
             }
 
             @Override

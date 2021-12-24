@@ -1,6 +1,5 @@
 package com.thenatekirby.compote;
 
-
 import com.thenatekirby.babel.core.api.IBlockReplacement;
 import com.thenatekirby.babel.entity.PlayerStatus;
 import com.thenatekirby.babel.integration.Mods;
