@@ -42,25 +42,16 @@ public class CompoteConfig {
         firstCompostAlwaysSucceeds = COMMON_BUILDER.comment("Whether or not the first piece of compostable material always raises the composter's level. Default[Vanilla] is true.")
                 .define("first_compost_always_succeeds", true);
 
-        insertFromAnyDirection = COMMON_BUILDER.comment("Allow items to be inserted from any face of the composter. Default[Vanilla] is false.")
-                .define("insert_from_any_direction", false);
+        insertFromAnyDirection = COMMON_BUILDER.comment("Allow items to be inserted from any face of the composter. Vanilla is false, default is true.")
+                .define("insert_from_any_direction", true);
 
-        extractFromAnyDirection = COMMON_BUILDER.comment("Allow items to be extracted from any face of the composter. Default[Vanilla] is false.")
-                .define("extract_from_any_direction", false);
+        extractFromAnyDirection = COMMON_BUILDER.comment("Allow items to be extracted from any face of the composter. Vanilla is false, default is true.")
+                .define("extract_from_any_direction", true);
 
         COMMON_BUILDER.pop();
 
         COMMON_CONFIG = COMMON_BUILDER.build();
     }
-
-    // TODO: Figure This Out
-//    @SubscribeEvent
-//    public static void onLoad(final ModConfig.Loading configEvent) {
-//    }
-//
-//    @SubscribeEvent
-//    public static void onReload(final ModConfig.Reloading configEvent) {
-//    }
 
     static void loadConfig(ForgeConfigSpec spec, Path path) {
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
