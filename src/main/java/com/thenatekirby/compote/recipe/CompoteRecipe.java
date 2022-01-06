@@ -170,7 +170,7 @@ public class CompoteRecipe implements Recipe<EmptyContainer> {
 
             if (GsonHelper.isValidNode(json, "change")) {
                 JsonElement jsonElement = json.get("change");
-                parseJsonElementInto(jsonElement, removals);
+                parseJsonElementInto(jsonElement, changes);
             }
 
             if (GsonHelper.isValidNode(json, "priority")) {
